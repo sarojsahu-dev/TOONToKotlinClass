@@ -1,29 +1,38 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <!-- Unique plugin ID -->
     <id>com.toon.kotlin.TOONToKotlinClass</id>
 
-    <!-- Public plugin name should be written in Title Case.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
+    <!-- Plugin Name -->
     <name>TOONToKotlinClass</name>
 
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://www.yourcompany.com">YourCompany</vendor>
+    <!-- Plugin Vendor -->
+    <vendor url="https://github.com/toon-kotlin">TOON Kotlin</vendor>
 
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
+    <!-- Plugin Description -->
     <description><![CDATA[
-        Enter short description for your plugin here.<br>
-        <em>most HTML tags may be used</em>
+        <h2>TOON → Kotlin Data Class Generator</h2>
+        Convert TOON-formatted text into production-ready Kotlin Data Classes.<br>
+        Supports Gson, Moshi, Kotlinx Serialization, and Firebase Firestore annotations.<br>
+        Provides modern UI, nested TOON parsing, list detection, type inference,<br>
+        and automatic code formatting.<br><br>
+        <em>Open-source, modern, developer-first.</em>
     ]]></description>
 
-    <!-- Product and plugin compatibility requirements.
-         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <!-- Plugin Dependencies -->
     <depends>com.intellij.modules.platform</depends>
 
-    <!-- Extension points defined by the plugin.
-         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <!-- Extension Points -->
     <extensions defaultExtensionNs="com.intellij">
-
+        <!-- (future extensions like applicationService, projectService, listeners go here) -->
     </extensions>
+
+    <!-- Actions -->
+    <actions>
+        <action id="TOON.GenerateKotlinClass"
+                class="com.toon.kotlin.toontokotlinclass.action.GenerateToonKotlinAction"
+                text="Generate Kotlin Data Class from TOON"
+                description="Convert TOON format into kotlin data classes">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
