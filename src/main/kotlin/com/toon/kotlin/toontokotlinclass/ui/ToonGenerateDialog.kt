@@ -3,6 +3,7 @@ package com.toon.kotlin.toontokotlinclass.ui
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.toon.kotlin.toontokotlinclass.generator.AnnotationFramework
 import javax.swing.JComponent
 import javax.swing.JTextArea
 import javax.swing.JScrollPane
@@ -12,7 +13,7 @@ class ToonGenerateDialog : DialogWrapper(true) {
     private val toonInputArea = JTextArea(12, 40)
     private val previewArea = JTextArea(12, 40)
 
-    private var annotationType: String = "Gson"
+    private var annotationType: AnnotationFramework = AnnotationFramework.Gson
     private var useVal = true
     private var useNullable = true
 
@@ -34,11 +35,11 @@ class ToonGenerateDialog : DialogWrapper(true) {
             separator()
 
             row("Annotation Framework:") {
-                comboBox(listOf("Gson", "Moshi", "Kotlinx Serialization", "Firebase"))
+                comboBox(AnnotationFramework.entries)
                     .applyToComponent {
                         selectedItem = annotationType
                         addActionListener {
-                            annotationType = selectedItem.toString()
+                            annotationType = selectedItem as AnnotationFramework
                         }
                     }
             }
@@ -72,7 +73,7 @@ class ToonGenerateDialog : DialogWrapper(true) {
     }
 
     fun getToonInput(): String = toonInputArea.text
-    fun getAnnotationType(): String = annotationType
+    fun getAnnotationFramework(): AnnotationFramework = annotationType
     fun isUseVal(): Boolean = useVal
     fun isUseNullable(): Boolean = useNullable
 
