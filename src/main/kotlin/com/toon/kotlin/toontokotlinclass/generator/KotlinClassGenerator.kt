@@ -2,125 +2,180 @@ package com.toon.kotlin.toontokotlinclass.generator
 
 import com.toon.kotlin.toontokotlinclass.parser.NamingUtils
 import com.toon.kotlin.toontokotlinclass.parser.ToonNode
+import com.toon.kotlin.toontokotlinclass.parser.TypeInference
 
+/**
+ * Generates Kotlin data class code from TOON AST nodes.
+ * 
+ * Supports multiple annotation frameworks (Gson, Moshi, Kotlinx Serialization, Firebase)
+ * and configurable code style (val/var, nullable/non-nullable).
+ * 
+ * @property useVal If true, generates `val` properties; otherwise `var`
+ * @property nullable If true, adds `?` to all property types
+ * @property framework The annotation framework to use for serialization annotations
+ * @property packageName Optional package name to add to generated files
+ */
 class KotlinClassGenerator(
     private val useVal: Boolean,
     private val nullable: Boolean,
-    private val framework: AnnotationFramework
+    private val framework: AnnotationFramework,
+    private val packageName: String = ""
 ) {
 
-    private val nestedClasses = mutableListOf<String>()
+    private val files = mutableMapOf<String, String>()
 
-    fun generateClass(rootName: String, nodes: List<ToonNode>): String {
-        val mainClass = buildClass(rootName, nodes)
-        val allClasses = nestedClasses + mainClass
+    /**
+     * Generates Kotlin files for all top-level objects in the AST.
+     * 
+     * @param top Map of top-level object names to their AST nodes
+     * @return Map of filenames to generated Kotlin code
+     */
+    fun generateAll(top: Map<String, ToonNode.ObjectNode>): Map<String, String> {
+        files.clear()
 
-        val imports = AnnotationGenerator.requiredImports(framework)
-            .joinToString("\n") { "import $it" }
+        top.forEach { (key, node) ->
+            val className = key.replaceFirstChar { it.uppercase() }
+            generateClassFile(className, node.children)
+        }
 
-        return """
-            $imports
-
-            ${allClasses.joinToString("\n\n")}
-        """.trimIndent()
+        return files
     }
 
-    private fun buildClass(name: String, nodes: List<ToonNode>): String {
-        val className = name.replaceFirstChar { it.uppercase() }
+    /**
+     * Generates a Kotlin data class file from a list of ToonNode children
+     * @param className The name of the class to generate
+     * @param nodes The list of child nodes (properties, lists, nested objects)
+     */
+    private fun generateClassFile(className: String, nodes: List<ToonNode>) {
+
+        val imports = AnnotationGenerator.imports(framework)
         val props = mutableListOf<String>()
 
-        for (node in nodes) {
+        nodes.forEach { node ->
+
             when (node) {
 
                 is ToonNode.Property -> {
-                    val originalKey = node.key
-                    val propName = NamingUtils.toCamelCase(originalKey)
-                    val annotation = AnnotationGenerator.generate(framework, originalKey)
-
-                    val type = TypeMapper.mapPrimitive(node.value!!)
-                    val nullableSuffix = if (nullable) "?" else ""
+                    val propName = NamingUtils.toCamelCase(node.key)
+                    val type = TypeMapper.mapPrimitive(node.value)
+                    val ann = AnnotationGenerator.generate(framework, node.key)
                     val v = if (useVal) "val" else "var"
+                    val q = if (nullable) "?" else ""
 
-                    props += """
-                        $annotation
-                        $v $propName: $type$nullableSuffix
-                    """.trimIndent()
+                    props += buildString {
+                        append("    $ann\n")
+                        append("    $v $propName: $type$q")
+                    }
                 }
 
                 is ToonNode.ListNode -> {
-                    val originalKey = node.key
-                    val propName = NamingUtils.toCamelCase(originalKey)
-                    val annotation = AnnotationGenerator.generate(framework, originalKey)
-
-                    val type = TypeMapper.mapList(node.items)
+                    val propName = NamingUtils.toCamelCase(node.key)
+                    val type = TypeMapper.mapList()
+                    val ann = AnnotationGenerator.generate(framework, node.key)
                     val v = if (useVal) "val" else "var"
 
-                    props += """
-                        $annotation
-                        $v $propName: $type
-                    """.trimIndent()
+                    props += buildString {
+                        append("    $ann\n")
+                        append("    $v $propName: $type")
+                    }
                 }
 
                 is ToonNode.ObjectNode -> {
-                    val nestedName = node.key.replaceFirstChar { it.uppercase() }
-                    val nestedClass = buildClass(nestedName, node.children)
+                    val nestedClassName = node.key.replaceFirstChar { it.uppercase() }
 
-                    nestedClasses += nestedClass
+                    // Generate nested file
+                    generateClassFile(nestedClassName, node.children)
 
                     val propName = NamingUtils.toCamelCase(node.key)
-                    val annotation = AnnotationGenerator.generate(framework, node.key)
+                    val ann = AnnotationGenerator.generate(framework, node.key)
                     val v = if (useVal) "val" else "var"
 
-                    props += """
-                        $annotation
-                        $v $propName: $nestedName
-                    """.trimIndent()
+                    props += buildString {
+                        append("    $ann\n")
+                        append("    $v $propName: $nestedClassName")
+                    }
                 }
 
                 is ToonNode.ObjectListNode -> {
-                    val classNameObj = node.key.replaceFirstChar { it.uppercase() }
-                    val nestedObj = buildObjectListClass(node)
-                    nestedClasses += nestedObj
+                    val singular = singularize(node.key).replaceFirstChar { it.uppercase() }
+
+                    // Generate list object file
+                    generateObjectListFile(singular, node)
 
                     val propName = NamingUtils.toCamelCase(node.key)
-                    val annotation = AnnotationGenerator.generate(framework, node.key)
+                    val ann = AnnotationGenerator.generate(framework, node.key)
                     val v = if (useVal) "val" else "var"
+                    val type = "List<$singular>"
 
-                    props += """
-                        $annotation
-                        $v $propName: List<$classNameObj>
-                    """.trimIndent()
+                    props += buildString {
+                        append("    $ann\n")
+                        append("    $v $propName: $type")
+                    }
                 }
             }
         }
 
-        return """
-            data class $className(
-                ${props.joinToString(",\n\n    ")}
-            )
-        """.trimIndent()
-    }
+        val body = props.joinToString(",\n\n")
 
-    private fun buildObjectListClass(node: ToonNode.ObjectListNode): String {
-
-        val className = node.key.replaceFirstChar { it.uppercase() }
-
-        val props = node.headers.map { header ->
-            val propName = NamingUtils.toCamelCase(header)
-            val annotation = AnnotationGenerator.generate(framework, header)
-            val type = "String"
-            val v = if (useVal) "val" else "var"
-
-            """
-                $annotation
-                $v $propName: $type
-            """.trimIndent()
+        val fullText = buildString {
+            if (imports.isNotEmpty()) {
+                imports.forEach { append("import $it\n") }
+                append("\n")
+            }
+            append("data class $className(\n")
+            append(body)
+            append("\n)")
         }
 
-        return """
-            data class $className(
-                ${props.joinToString(",\n\n    ")}
-            )
-        """.trimIndent()
+        files["$className.kt"] = fullText
+    }
+
+    /**
+     * Generates a Kotlin data class for object list items
+     * @param className The name of the class (singular form)
+     * @param node The ObjectListNode containing headers and row data
+     */
+    private fun generateObjectListFile(className: String, node: ToonNode.ObjectListNode) {
+
+        val imports = AnnotationGenerator.imports(framework)
+        val props = mutableListOf<String>()
+        val firstRow = node.rows.firstOrNull()
+
+        node.headers.forEachIndexed { idx, header ->
+            val sample = firstRow?.getOrNull(idx) ?: ""
+            val inferred = TypeInference.inferValue(sample)
+            val type = TypeMapper.mapPrimitive(inferred)
+            val propName = NamingUtils.toCamelCase(header)
+            val ann = AnnotationGenerator.generate(framework, header)
+            val v = if (useVal) "val" else "var"
+            val q = if (nullable) "?" else ""
+
+            props += buildString {
+                append("    $ann\n")
+                append("    $v $propName: $type$q")
+            }
+        }
+
+        val body = props.joinToString(",\n\n")
+
+        val fullText = buildString {
+            if (imports.isNotEmpty()) {
+                imports.forEach { append("import $it\n") }
+                append("\n")
+            }
+            append("data class $className(\n")
+            append(body)
+            append("\n)")
+        }
+
+        files["$className.kt"] = fullText
+    }
+
+    private fun singularize(word: String): String {
+        return when {
+            word.endsWith("ies") -> word.dropLast(3) + "y"
+            word.endsWith("s") -> word.dropLast(1)
+            else -> word
+        }
     }
 }

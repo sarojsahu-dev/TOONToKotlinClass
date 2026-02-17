@@ -8,10 +8,4 @@ enum class AnnotationFramework(val displayName: String) {
     Firebase("Firebase");
 
     override fun toString(): String = displayName
-
-    companion object {
-        fun fromDisplayName(name: String): AnnotationFramework {
-            return entries.firstOrNull { it.displayName == name } ?: Gson
-        }
-    }
 }

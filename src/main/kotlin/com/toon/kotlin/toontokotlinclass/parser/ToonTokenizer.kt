@@ -5,11 +5,11 @@ class ToonTokenizer {
     fun tokenize(input: String): List<Pair<Int, String>> {
         val result = mutableListOf<Pair<Int, String>>()
 
-        input.lines().forEach { rawLine ->
-            if (rawLine.isBlank()) return@forEach
+        input.lines().forEach { raw ->
+            if (raw.isBlank()) return@forEach
 
-            val indent = ToonIndent.getIndentLevel(rawLine)
-            val cleaned = ToonIndent.trimIndent(rawLine)
+            val indent = ToonIndent.getIndentLevel(raw)
+            val cleaned = ToonIndent.trimIndent(raw)
 
             result += indent to cleaned
         }

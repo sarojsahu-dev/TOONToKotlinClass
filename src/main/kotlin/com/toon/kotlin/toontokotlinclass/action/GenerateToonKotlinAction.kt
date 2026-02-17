@@ -5,36 +5,59 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.toon.kotlin.toontokotlinclass.generator.KotlinClassGenerator
 import com.toon.kotlin.toontokotlinclass.parser.ToonParser
 import com.toon.kotlin.toontokotlinclass.ui.ToonGenerateDialog
+import com.toon.kotlin.toontokotlinclass.writer.PsiKotlinWriter
 
+/**
+ * IntelliJ action that opens the TOON to Kotlin generator dialog.
+ * 
+ * This action is registered in plugin.xml and appears in the "Generate" menu.
+ * It orchestrates the parsing, generation, and file writing workflow.
+ */
 class GenerateToonKotlinAction : AnAction("Generate Kotlin From TOON") {
 
     override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
 
         val dialog = ToonGenerateDialog()
 
-        // Show UI dialog
-        if (!dialog.showAndGet()) return
+        dialog.onUpdatePreview = { toon ->
+            try {
+                if (toon.isBlank()) {
+                    emptyMap()
+                } else {
+                    val parser = ToonParser()
+                    val ast = parser.parse(toon)
 
-        // 1. Read the TOON input
-        val toonText = dialog.getToonInput()
+                    val generator = KotlinClassGenerator(
+                        useVal = dialog.isUseVal(),
+                        nullable = dialog.isUseNullable(),
+                        framework = dialog.getAnnotationFramework(),
+                        packageName = dialog.getPackageName()
+                    )
 
-        // 2. Parse TOON to AST
-        val parser = ToonParser()
-        val nodes = parser.parse(toonText)
+                    generator.generateAll(ast)
+                }
+            } catch (e: Exception) {
+                throw e
+            }
+        }
 
-        // 3. Generate Kotlin from AST
-        val generator = KotlinClassGenerator(
-            useVal = dialog.isUseVal(),
-            nullable = dialog.isUseNullable(),
-            framework = dialog.getAnnotationFramework()
-        )
+        dialog.onGenerateClicked = { files ->
+            try {
+                PsiKotlinWriter.writeMultipleFiles(
+                    project = project,
+                    files = files,
+                    packageName = dialog.getPackageName()
+                )
+            } catch (e: Exception) {
+                com.intellij.openapi.ui.Messages.showErrorDialog(
+                    project,
+                    "Failed to generate files: ${e.message}",
+                    "Generation Error"
+                )
+            }
+        }
 
-        val kotlinCode = generator.generateClass(
-            rootName = "Root",
-            nodes = nodes
-        )
-
-        // 4. Show it in the Kotlin preview box
-        dialog.setPreview(kotlinCode)
+        dialog.show()
     }
 }

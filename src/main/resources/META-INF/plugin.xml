@@ -23,7 +23,8 @@
 
     <!-- Extension Points -->
     <extensions defaultExtensionNs="com.intellij">
-        <!-- (future extensions like applicationService, projectService, listeners go here) -->
+        <!-- Notification Group for success/error messages -->
+        <notificationGroup id="TOON Generator" displayType="BALLOON"/>
     </extensions>
 
     <!-- Actions -->

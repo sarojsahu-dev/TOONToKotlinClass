@@ -2,28 +2,35 @@ package com.toon.kotlin.toontokotlinclass.generator
 
 object AnnotationGenerator {
 
-    fun generate(framework: AnnotationFramework, originalKey: String): String {
+    fun generate(framework: AnnotationFramework, key: String): String {
         return when (framework) {
             AnnotationFramework.Gson ->
-                """@SerializedName("$originalKey")"""
+                """@SerializedName("$key")"""
 
             AnnotationFramework.Moshi ->
-                """@Json(name = "$originalKey")"""
+                """@Json(name = "$key")"""
 
             AnnotationFramework.Kotlinx ->
-                """@SerialName("$originalKey")"""
+                """@SerialName("$key")"""
 
             AnnotationFramework.Firebase ->
-                """@PropertyName("$originalKey")"""
+                """@PropertyName("$key")"""
         }
     }
 
-    fun requiredImports(framework: AnnotationFramework): List<String> {
+    fun imports(framework: AnnotationFramework): List<String> {
         return when (framework) {
-            AnnotationFramework.Gson -> listOf("com.google.gson.annotations.SerializedName")
-            AnnotationFramework.Moshi -> listOf("com.squareup.moshi.Json")
-            AnnotationFramework.Kotlinx -> listOf("kotlinx.serialization.SerialName")
-            AnnotationFramework.Firebase -> listOf("com.google.firebase.firestore.PropertyName")
+            AnnotationFramework.Gson ->
+                listOf("com.google.gson.annotations.SerializedName")
+
+            AnnotationFramework.Moshi ->
+                listOf("com.squareup.moshi.Json")
+
+            AnnotationFramework.Kotlinx ->
+                listOf("kotlinx.serialization.SerialName")
+
+            AnnotationFramework.Firebase ->
+                listOf("com.google.firebase.firestore.PropertyName")
         }
     }
 }
