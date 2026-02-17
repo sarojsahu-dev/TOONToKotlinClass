@@ -223,19 +223,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Built with [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-- Inspired by JSON-to-Kotlin converters
-- Thanks to all contributors!
-
-## Support
-
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/TOONToKotlinClass/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/TOONToKotlinClass/discussions)
-- 📧 **Email**: your.email@example.com
-
----
-
-Made with ❤️ by [Your Name](https://github.com/yourusername)
