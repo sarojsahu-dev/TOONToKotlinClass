@@ -9,7 +9,7 @@ import com.toon.kotlin.toontokotlinclass.writer.PsiKotlinWriter
 
 /**
  * IntelliJ action that opens the TOON to Kotlin generator dialog.
- * 
+ *
  * This action is registered in plugin.xml and appears in the "Generate" menu.
  * It orchestrates the parsing, generation, and file writing workflow.
  */
@@ -28,10 +28,9 @@ class GenerateToonKotlinAction : AnAction("Generate Kotlin From TOON") {
                     val parser = ToonParser()
                     val ast = parser.parse(toon)
 
+                    // Pass the full advanced settings object to the generator
                     val generator = KotlinClassGenerator(
-                        useVal = dialog.isUseVal(),
-                        nullable = dialog.isUseNullable(),
-                        framework = dialog.getAnnotationFramework(),
+                        settings = dialog.getAdvancedSettings(),
                         packageName = dialog.getPackageName()
                     )
 

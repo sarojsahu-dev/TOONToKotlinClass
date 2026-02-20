@@ -4,6 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.toon.kotlin.toontokotlinclass.generator.AnnotationFramework
+import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -36,27 +37,8 @@ class ToonGenerateDialog : DialogWrapper(true) {
     private val packageNameField = JTextField("com.example.models", 30)
     private val statusLabel = JLabel(" ")
     
-    // Advanced settings
+    // Advanced settings (holds all generation options)
     private val advancedSettings = AdvancedSettingsDialog()
-
-    // Generation options (now linked to advanced settings)
-    private var annotationType: AnnotationFramework
-        get() = advancedSettings.annotationFramework
-        set(value) { advancedSettings.annotationFramework = value }
-        
-    private var useVal: Boolean
-        get() = advancedSettings.useVal
-        set(value) { advancedSettings.useVal = value }
-        
-    private var useNullable: Boolean
-        get() = advancedSettings.nullableType == AdvancedSettingsDialog.NullableType.NULLABLE
-        set(value) { 
-            advancedSettings.nullableType = if (value) {
-                AdvancedSettingsDialog.NullableType.NULLABLE
-            } else {
-                AdvancedSettingsDialog.NullableType.NON_NULLABLE
-            }
-        }
 
     // Callbacks for preview and file generation
     var onGenerateClicked: ((Map<String, String>) -> Unit)? = null
@@ -68,10 +50,6 @@ class ToonGenerateDialog : DialogWrapper(true) {
         title = "TOON → Kotlin Data Class Generator"
         setupAutoPreview()
         init()
-        
-        // Set dialog size
-        window.preferredSize = Dimension(1200, 800)
-        window.pack()
     }
 
     /**
@@ -159,7 +137,7 @@ class ToonGenerateDialog : DialogWrapper(true) {
     }
 
     override fun createCenterPanel(): JComponent {
-        
+
         return panel {
             
             // Header
@@ -171,49 +149,50 @@ class ToonGenerateDialog : DialogWrapper(true) {
             
             separator()
             
-            // Main content: side-by-side input and preview
+            // Toolbar row
             row {
-                // Left panel: TOON Input
-                panel {
-                    row {
-                        label("TOON Input:").bold()
-                        
-                        button("Format") {
-                            formatToonInput()
-                        }
-                        
-                        button("Clear") {
-                            toonInputArea.text = ""
-                        }
-                        
-                        button("Advanced") {
-                            if (advancedSettings.showAndGet()) {
-                                updatePreview()
-                            }
-                        }
+                label("TOON Input:").bold()
+
+                button("Format") {
+                    formatToonInput()
+                }
+
+                button("Clear") {
+                    toonInputArea.text = ""
+                }
+
+                button("Advanced") {
+                    try {
+                        advancedSettings.showAndGet()
+                        updatePreview()
+                    } catch (ex: Exception) {
+                        javax.swing.JOptionPane.showMessageDialog(
+                            window,
+                            "Advanced settings error: ${ex.message}\n${ex.stackTraceToString().take(500)}",
+                            "Error",
+                            javax.swing.JOptionPane.ERROR_MESSAGE
+                        )
                     }
-                    
-                    row {
-                        scrollCell(toonInputArea)
-                            .align(Align.FILL)
-                            .resizableColumn()
-                    }.resizableRow()
-                    
-                }.resizableColumn()
-                
-                // Right panel: Kotlin Preview
-                panel {
-                    row {
-                        label("Kotlin Preview:").bold()
-                    }
-                    
-                    row {
-                        scrollCell(previewArea)
-                            .align(Align.FILL)
-                            .resizableColumn()
-                    }.resizableRow()
-                    
-                }.resizableColumn()
+                }
+            }
+
+            // Main content: side-by-side input and preview using JSplitPane
+            row {
+                val leftPanel = JPanel(BorderLayout()).apply {
+                    add(JLabel("  TOON Input"), BorderLayout.NORTH)
+                    add(JScrollPane(toonInputArea), BorderLayout.CENTER)
+                }
+                val rightPanel = JPanel(BorderLayout()).apply {
+                    add(JLabel("  Kotlin Preview"), BorderLayout.NORTH)
+                    add(JScrollPane(previewArea), BorderLayout.CENTER)
+                }
+                val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel).apply {
+                    resizeWeight = 0.5
+                    isContinuousLayout = true
+                }
+                cell(splitPane)
+                    .align(Align.FILL)
+                    .resizableColumn()
             }.resizableRow()
             
             separator()
@@ -229,27 +208,31 @@ class ToonGenerateDialog : DialogWrapper(true) {
                 label("Annotation Framework:")
                 comboBox(AnnotationFramework.entries)
                     .applyToComponent {
-                        selectedItem = annotationType
+                        selectedItem = advancedSettings.annotationFramework
                         addActionListener {
-                            annotationType = selectedItem as AnnotationFramework
+                            advancedSettings.annotationFramework = selectedItem as AnnotationFramework
                             updatePreview()
                         }
                     }
                 
                 checkBox("Use val")
                     .applyToComponent {
-                        isSelected = useVal
+                        isSelected = advancedSettings.useVal
                         addActionListener { 
-                            useVal = isSelected
+                            advancedSettings.useVal = isSelected
                             updatePreview()
                         }
                     }
 
                 checkBox("Nullable fields")
                     .applyToComponent {
-                        isSelected = useNullable
+                        isSelected = advancedSettings.nullableType == AdvancedSettingsDialog.NullableType.NULLABLE
                         addActionListener { 
-                            useNullable = isSelected
+                            advancedSettings.nullableType = if (isSelected) {
+                                AdvancedSettingsDialog.NullableType.NULLABLE
+                            } else {
+                                AdvancedSettingsDialog.NullableType.NON_NULLABLE
+                            }
                             updatePreview()
                         }
                     }
@@ -273,13 +256,21 @@ class ToonGenerateDialog : DialogWrapper(true) {
                     </html>
                 """.trimIndent())
             }
+        }.apply {
+            preferredSize = Dimension(900, 600)
         }
     }
 
-    // Accessor methods
-    fun getAnnotationFramework() = annotationType
-    fun isUseVal() = useVal
-    fun isUseNullable() = useNullable
+    // ─── Accessor Methods ────────────────────────────────────────────────
+
+    /**
+     * Returns the full advanced settings object for use in code generation.
+     */
+    fun getAdvancedSettings() = advancedSettings
+
+    fun getAnnotationFramework() = advancedSettings.annotationFramework
+    fun isUseVal() = advancedSettings.useVal
+    fun isUseNullable() = advancedSettings.nullableType == AdvancedSettingsDialog.NullableType.NULLABLE
     fun getPackageName() = packageNameField.text.trim()
 
     /**
