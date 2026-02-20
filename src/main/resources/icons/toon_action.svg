@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A14A0"/>
+      <stop offset="100%" style="stop-color:#1E56D6"/>
+    </linearGradient>
+    <linearGradient id="arrow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5BC0F8"/>
+      <stop offset="100%" style="stop-color:#38A0F8"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded rectangle background -->
+  <rect x="0" y="0" width="16" height="16" rx="3" ry="3" fill="url(#bg)"/>
+  <!-- T (representing TOON) -->
+  <text x="1.5" y="11" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="6" fill="white">T</text>
+  <!-- Arrow → -->
+  <line x1="6.5" y1="8.5" x2="9" y2="8.5" stroke="url(#arrow)" stroke-width="1.2" stroke-linecap="round"/>
+  <polyline points="8,6.8 9.5,8.5 8,10.2" fill="none" stroke="url(#arrow)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- K (Kotlin) -->
+  <text x="10" y="11.5" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="7" fill="white">K</text>
+</svg>

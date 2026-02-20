@@ -31,7 +31,7 @@ intellijPlatform {
         }
 
         changeNotes = """
-            Initial version of TOONToKotlinClass plugin.
+            TOONToKotlinClass plugin.
         """.trimIndent()
     }
 }
