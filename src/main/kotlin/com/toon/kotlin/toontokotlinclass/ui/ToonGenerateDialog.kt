@@ -189,6 +189,7 @@ class ToonGenerateDialog : DialogWrapper(true) {
                 val splitPane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel).apply {
                     resizeWeight = 0.5
                     isContinuousLayout = true
+                    dividerSize = 1
                 }
                 cell(splitPane)
                     .align(Align.FILL)
