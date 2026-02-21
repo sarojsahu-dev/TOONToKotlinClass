@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.toon.kotlin"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -31,7 +31,16 @@ intellijPlatform {
         }
 
         changeNotes = """
-            TOONToKotlinClass plugin.
+            <h3>v1.0.0 - Initial Release</h3>
+            <ul>
+                <li>TOON to Kotlin data class conversion with real-time preview</li>
+                <li>Support for nested objects, lists, and object lists</li>
+                <li>11 annotation frameworks (Gson, Jackson, Moshi, kotlinx.serialization, Firebase, etc.)</li>
+                <li>Advanced settings with 4-tab UI (Property, Annotation, Other, Extensions)</li>
+                <li>Smart type inference (Int, Long, Double, Boolean, String)</li>
+                <li>Built-in TOON formatter and validator</li>
+                <li>Parcelable support, @Keep annotations, and more</li>
+            </ul>
         """.trimIndent()
     }
 }
