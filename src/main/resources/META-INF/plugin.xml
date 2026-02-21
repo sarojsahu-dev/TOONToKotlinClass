@@ -10,12 +10,19 @@
 
     <!-- Plugin Description -->
     <description><![CDATA[
-        <h2>TOON → Kotlin Data Class Generator</h2>
-        Convert TOON-formatted text into production-ready Kotlin Data Classes.<br>
-        Supports Gson, Moshi, Kotlinx Serialization, and Firebase Firestore annotations.<br>
-        Provides modern UI, nested TOON parsing, list detection, type inference,<br>
-        and automatic code formatting.<br><br>
-        <em>Open-source, modern, developer-first.</em>
+        TOON to Kotlin Data Class Generator — Convert TOON (Token-Oriented Object Notation) formatted text into production-ready Kotlin data classes with a single click.
+        <br><br>
+        <b>Features:</b>
+        <ul>
+            <li>Real-time preview of generated Kotlin code</li>
+            <li>11 annotation frameworks: Gson, Jackson, Moshi, kotlinx.serialization, Fastjson, LoganSquare, Firebase, and more</li>
+            <li>Nested objects, lists, and object lists support</li>
+            <li>Smart type inference (Int, Long, Double, Boolean, String)</li>
+            <li>Advanced settings with 4-tab UI (Property, Annotation, Other, Extensions)</li>
+            <li>Parcelable support, @Keep annotations, inner class model</li>
+            <li>Built-in TOON formatter and validator</li>
+        </ul>
+        Open-source, modern, developer-first.
     ]]></description>
 
     <!-- Plugin Dependencies -->

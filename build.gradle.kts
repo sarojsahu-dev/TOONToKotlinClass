@@ -27,7 +27,6 @@ intellijPlatform {
     pluginConfiguration {
         ideaVersion {
             sinceBuild = "233"
-            untilBuild = "999.*"
         }
 
         changeNotes = """
