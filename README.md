@@ -1,6 +1,6 @@
 # TOONToKotlinClass
 
-An IntelliJ IDEA / Android Studio plugin that generates Kotlin data classes from **TOON** (Table-Object-Oriented Notation) — a lightweight, human-readable format for defining data structures.
+An IntelliJ IDEA / Android Studio plugin that generates Kotlin data classes from **TOON** [Token-Oriented Object Notation](https://toonformat.dev/) — a lightweight, human-readable format for defining data structures.
 
 > **TOON** is designed to be simpler than JSON for quickly sketching out data models. Write your schema in plain text and instantly get production-ready Kotlin code.
 
