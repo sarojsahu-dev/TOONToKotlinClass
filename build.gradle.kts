@@ -27,7 +27,7 @@ intellijPlatform {
     pluginConfiguration {
         ideaVersion {
             sinceBuild = "233"
-            untilBuild = ""   // No upper limit — supports all latest IDE versions
+            untilBuild = provider { null }   // Omits until-build entirely — supports all future IDE versions
         }
 
         changeNotes = """
