@@ -31,6 +31,15 @@ intellijPlatform {
         }
 
         changeNotes = """
+            <h3>v1.1.0 - Bug Fixes &amp; Compatibility Update</h3>
+            <ul>
+                <li>Fixed dialog not opening when clicking Generate action</li>
+                <li>Fixed Advanced settings dialog not opening on button click</li>
+                <li>Fixed dialog size — input and preview panels are now equal width (50/50 split)</li>
+                <li>Reduced main dialog size for better fit on all screen sizes</li>
+                <li>Now supports all JetBrains IDEs from 2023.3 onwards with no upper version limit</li>
+                <li>Compatible with IntelliJ IDEA, Android Studio, GoLand, PyCharm, WebStorm, Rider, CLion, and all other JetBrains IDEs</li>
+            </ul>
             <h3>v1.0.0 - Initial Release</h3>
             <ul>
                 <li>TOON to Kotlin data class conversion with real-time preview</li>
