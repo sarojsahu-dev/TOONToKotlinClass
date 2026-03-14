@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.toon.kotlin"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ intellijPlatform {
         }
 
         changeNotes = """
-            <h3>v1.1.0 - Bug Fixes &amp; Compatibility Update</h3>
+            <h3>v1.1.1 - Bug Fixes &amp; Compatibility Update</h3>
             <ul>
                 <li>Fixed dialog not opening when clicking Generate action</li>
                 <li>Fixed Advanced settings dialog not opening on button click</li>
