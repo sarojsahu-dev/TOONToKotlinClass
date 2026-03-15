@@ -216,7 +216,7 @@ Contributions are welcome! Feel free to:
 
 **Saroj Sahu**
 - 📧 Email: [sarojsahu14369@gmail.com](mailto:sarojsahu14369@gmail.com)
-- 🐙 GitHub: [@sarojsahu](https://github.com/sarojsahu-dev)
+- 🐙 GitHub: [sarojsahu-dev](https://github.com/sarojsahu-dev)
 
 ---
 
