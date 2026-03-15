@@ -1,18 +1,36 @@
-# TOONToKotlinClass
+<p align="center">
+  <img src="assets/TOONToKotlin.png" width="140" alt="TOONToKotlinClass Logo"/>
+</p>
 
-[![Version](https://img.shields.io/jetbrains/plugin/v/30297.svg)](https://plugins.jetbrains.com/plugin/30297-toontokotlinclass)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/30297.svg)](https://plugins.jetbrains.com/plugin/30297-toontokotlinclass)
-[![Install](https://img.shields.io/badge/Install-JetBrains%20Marketplace-blue?logo=jetbrains)](https://plugins.jetbrains.com/plugin/30297-toontokotlinclass)
+<h1 align="center">TOONToKotlinClass</h1>
 
+<p align="center">
+Convert <b>TOON</b> (Token-Oriented Object Notation) into production-ready Kotlin data classes directly inside JetBrains IDEs.
+</p>
+
+<p align="center">
+  <a href="https://plugins.jetbrains.com/plugin/30297-toontokotlinclass">
+    <img src="https://img.shields.io/jetbrains/plugin/v/30297.svg?label=Version"/>
+  </a>
+  <a href="https://plugins.jetbrains.com/plugin/30297-toontokotlinclass">
+    <img src="https://img.shields.io/jetbrains/plugin/d/30297.svg?label=Downloads"/>
+  </a>
+</p>
+
+<p align="center">
 <a href="https://plugins.jetbrains.com/plugin/30297-toontokotlinclass">
-  <img src="https://plugins.jetbrains.com/assets/badges/install_plugin_badge-white.svg" alt="Install from JetBrains Marketplace" height="48"/>
+<img src="assets/jetbrains.png" width="24" style="vertical-align:middle; margin-right:6px;">
+<img src="https://img.shields.io/badge/GET%20PLUGIN-JETBRAINS%20MARKETPLACE-000000?style=for-the-badge" style="vertical-align:middle;">
 </a>
+</p>
+
+---
+
 
 An IntelliJ IDEA / Android Studio plugin that generates Kotlin data classes from **TOON** [Token-Oriented Object Notation](https://toonformat.dev/) — a lightweight, human-readable format for defining data structures.
 
 > **TOON** is designed to be simpler than JSON for quickly sketching out data models. Write your schema in plain text and instantly get production-ready Kotlin code.
 
----
 
 ## ✨ Features
 
